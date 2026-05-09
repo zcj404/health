@@ -4,6 +4,8 @@ import { calculateBMI, calculateTargetCalories, calculateTargetDate } from '@/li
 import { generateHealthPlan } from '@/lib/healthPlan'
 import { StepData } from '@/types'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
   const record = await prisma.healthRecord.findUnique({ where: { id: params.id } })
   if (!record) return NextResponse.json({ error: 'Not found' }, { status: 404 })

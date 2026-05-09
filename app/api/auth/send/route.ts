@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: NextRequest) {
   const { email, recordId } = await req.json()
   if (!email) return NextResponse.json({ error: 'email required' }, { status: 400 })

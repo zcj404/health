@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { sessionSchema } from '@/lib/schemas'
 import { randomUUID } from 'crypto'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}))
   const parsed = sessionSchema.safeParse(body)
