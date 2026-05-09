@@ -64,7 +64,7 @@ export default function QuestionnairePage() {
       })
       const data = await res.json()
       localStorage.setItem('sessionToken', data.sessionToken)
-      resolveId.current(data.assessmentId)
+      resolveId.current(data.recordId)
       if (data.progress && Object.keys(data.progress).length > 0) {
         setForm(f => ({ ...f, ...Object.fromEntries(Object.entries(data.progress).map(([k, v]) => [k, String(v)])) }))
         const filled = Object.values(data.progress).filter(Boolean).length
@@ -88,10 +88,11 @@ export default function QuestionnairePage() {
 
   const saveStep = async (key: string, value: string) => {
     const id = await assessmentIdReady.current
+    const token = localStorage.getItem('sessionToken')
     const payload = NUMBER_FIELDS.includes(key) ? { [key]: Number(value) } : { [key]: value }
     const res = await fetch(`/api/records/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify(payload),
     })
     if (!res.ok) throw new Error('Save failed')
@@ -130,7 +131,7 @@ export default function QuestionnairePage() {
     const id = await assessmentIdReady.current
     const res = await fetch(`/api/records/${id}/submit`, { method: 'POST' })
     if (res.ok) {
-      localStorage.setItem('assessmentId', id)
+      localStorage.setItem('recordId', id)
       router.push('/auth')
     } else {
       setError('提交失败，请检查填写内容')

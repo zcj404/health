@@ -25,7 +25,7 @@ export default function AccountPage() {
 
   const fetchResult = async () => {
     const token = getToken()
-    const id = localStorage.getItem('assessmentId')
+    const id = localStorage.getItem('recordId')
     if (!token || !id) { router.push('/'); return }
     const [res, histRes] = await Promise.all([
       fetch(`/api/records/${id}`, { headers: { Authorization: `Bearer ${token}` } }),

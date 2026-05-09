@@ -10,11 +10,11 @@ export default function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const assessmentId = localStorage.getItem('assessmentId')
+    const recordId = localStorage.getItem('recordId')
     const res = await fetch('/api/auth/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, assessmentId }),
+      body: JSON.stringify({ email, recordId }),
     })
     const data = await res.json()
     if (data.sessionToken) {
