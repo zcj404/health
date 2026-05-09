@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  sessionToken String        @unique @map("session_token")
+  email        String?       @unique
+  createdAt    DateTime      @default(now()) @map("created_at")
+  records      HealthRecord[]
+  subscription Subscription?
+
+  @@map("users")
+}
+
+enum RecordStatus {
+  in_progress
+  completed
+}
+
+model HealthRecord {
+  id             String       @id @default(uuid())
+  userId         String       @map("user_id")
+  stepData       Json         @default("{}") @map("step_data")
+  status         RecordStatus @default(in_progress)
+  bmi            Float?
+  targetCalories Int?         @map("target_calories")
+  targetDate     DateTime?    @map("target_date")
+  healthPlan     Json?        @map("health_plan")
+  calcVersion    Int          @default(1) @map("calc_version")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  user           User         @relation(fields: [userId], references: [id])
+
+  @@map("health_records")
+}
+
+enum SubscriptionPlan {
+  monthly
+  yearly
+  lifetime
+}
+
+enum SubscriptionStatus {
+  free
+  active
+  expired
+}
+
+model Subscription {
+  id          String             @id @default(uuid())
+  userId      String             @unique @map("user_id")
+  plan        SubscriptionPlan   @default(monthly)
+  status      SubscriptionStatus @default(free)
+  activatedAt DateTime?          @map("activated_at")
+  expiredAt   DateTime?          @map("expired_at")
+  user        User               @relation(fields: [userId], references: [id])
+
+  @@map("subscriptions")
+}
